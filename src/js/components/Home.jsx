@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
+import Tarea from "./Tareas";
 
 //create your first component
 const Home = () => {
@@ -24,32 +25,29 @@ const Home = () => {
 		fetch('https://playground.4geeks.com/todo/users/CarlosVillalobos', {
 			method: "GET",
 		})
-			.then(response => response.json())
-			.then(data => console.log(data));
+			.then(response => {
+				if (response.status === 404) {
+					crearUsuario()					
+				}
+
+				return response.json()})
+			.then(data => setTareas(data));
 	}
 
+	
+
 	useEffect(() => {
-		crearUsuario()
+		
 		traerUsuario()
-	})
+	},[])
 
 
 	return (
 		<div className="text-center">
-
-
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
+			<h1 className="titulo col-12">todo</h1>
+			<Tarea/>
+			
+			
 		</div>
 	);
 };

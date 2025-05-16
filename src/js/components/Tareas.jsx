@@ -41,7 +41,7 @@ const Lista = () => {
 
     }, [])
 
-    console.log(tareas);
+
 
     const entradaTarea = (evento) => {
         setEntrada(evento.target.value);
@@ -59,27 +59,43 @@ const Lista = () => {
                 is_done: false
             })
         })
-            .then(response => response.json())
-            .then(data => console.log(data.todos));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se pudo agregar la tarea");
 
-        setTareas([...tareas, {
-                label: entrada,
-                is_done: false
-            }]);
-        setEntrada('');
+                }
+                return response.json()
+            })
+            .then(data => {
+                if (data) {
+                    setTareas([...tareas, data]);
+                    setEntrada('');
+                }
+
+            })
+            .catch(error => console.log(error))
+
     }
 
-    const eliminarTarea = (tareaid) => {
+    const eliminarTarea = (tareaId) => {
 
-        fetch(`https://playground.4geeks.com/todo/todos/${tareaid}`),{
+        fetch(`https://playground.4geeks.com/todo/todos/${tareaId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
-            // body: JSON.stringify({ Duda
-            //     id: indexAEliminar
-            // })
-        }
+
+        })
+
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("No se pudo eliminar la tarea");
+
+                }
+                const result = tareas.filter(item => item.id != tareaId)
+                setTareas(result)
+            })
+            .catch(error => console.log(error))
 
 
     }
